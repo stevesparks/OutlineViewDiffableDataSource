@@ -8,24 +8,24 @@
 
 import Foundation
 
-public class Snapshot: NSObject {
-    private var root: SnapshotMember
+public class OutlineViewSnapshot: NSObject {
+    private var root: OutlineViewSnapshotMember
 
     init(from ds: NSOutlineViewDataSource, for view: NSOutlineView) {
-        root = Snapshot.member(using: ds, in: view)
+        root = OutlineViewSnapshot.member(using: ds, in: view)
         super.init()
     }
 
     override init() {
-        root = SnapshotMember()
+        root = OutlineViewSnapshotMember()
         super.init()
     }
 
     var isEmpty: Bool { return root.children.isEmpty }
 
-    private static func member(for item: OutlineMemberItem? = nil, using ds: NSOutlineViewDataSource, in view: NSOutlineView, recursive: Bool = true) -> SnapshotMember {
+    private static func member(for item: OutlineMemberItem? = nil, using ds: NSOutlineViewDataSource, in view: NSOutlineView, recursive: Bool = true) -> OutlineViewSnapshotMember {
         let itemCount = ds.outlineView?(view, numberOfChildrenOfItem: item) ?? 0
-        var children = [SnapshotMember]()
+        var children = [OutlineViewSnapshotMember]()
         if recursive && itemCount > 0 {
             (0..<itemCount).forEach { counter in
                 if let child = ds.outlineView?(view, child: counter, ofItem: item) as? AnyHashable {
@@ -42,16 +42,16 @@ public class Snapshot: NSObject {
             }
         }()
 
-        return SnapshotMember(item: item, children: children, isExpandable: exp)
+        return OutlineViewSnapshotMember(item: item, children: children, isExpandable: exp)
     }
 
-    static let empty = Snapshot()
+    static let empty = OutlineViewSnapshot()
 
-    func parent(of member: SnapshotMember) -> SnapshotMember? {
+    func parent(of member: OutlineViewSnapshotMember) -> OutlineViewSnapshotMember? {
         return root.parent(of: member)
     }
 
-    func instructions(forMorphingInto destination: Snapshot) -> SnapshotDiff {
+    func instructions(forMorphingInto destination: OutlineViewSnapshot) -> OutlineViewSnapshotDiff {
         return root.instructions(forMorphingInto: destination.root, from: IndexPath())
     }
 

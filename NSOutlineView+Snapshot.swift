@@ -10,7 +10,7 @@ import Foundation
 
 // Turn a diff into commands
 extension NSOutlineView {
-    func apply(_ snapshot: SnapshotDiff, with animation: NSTableView.AnimationOptions = [.effectFade]) {
+    func apply(_ snapshot: OutlineViewSnapshotDiff, with animation: NSTableView.AnimationOptions = [.effectFade]) {
         beginUpdates()
         snapshot.forEach { instr in
             switch instr {

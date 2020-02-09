@@ -17,19 +17,17 @@ typealias OutlineMemberItem = AnyHashable
  * large Mac app with a complex NSOutlineView. Each time the contents of the outline
  * view changed, we were reloading, and had a TON of plumbing around hiding that fact.
  */
-public class OutlineViewDiffableDataSource: NSObject {
-    private let dataSource: NSOutlineViewDataSource!
+public class OutlineViewDiffableDataSource: PassthroughOutlineViewDataSource {
     private let outlineView: NSOutlineView!
 
     init(baseDataSource: NSOutlineViewDataSource, targetView: NSOutlineView) {
-        self.dataSource = baseDataSource
         self.outlineView = targetView
-        super.init()
-        snapshot = Snapshot(from: dataSource, for: outlineView)
+        super.init(dataSource: baseDataSource)
+        snapshot = OutlineViewSnapshot(from: dataSource, for: outlineView)
         targetView.dataSource = self
     }
 
-    private var snapshot = Snapshot.empty
+    private var snapshot = OutlineViewSnapshot.empty
 
     // Use when the model has changed and you want animation
     public func applySnapshot() {
@@ -51,26 +49,14 @@ public class OutlineViewDiffableDataSource: NSObject {
     }
 
     public func refreshSnapshot() {
-        snapshot = Snapshot(from: dataSource, for: outlineView)
+        snapshot = OutlineViewSnapshot(from: dataSource, for: outlineView)
     }
 
     var isEmpty: Bool {
         return snapshot.isEmpty
     }
-}
 
-
-extension NSObject {
-    func report(_ message: String = "", _ preamble: String = "", function: String = #function) {
-//        let fn = String(describing: type(of: self))
-//        print("--> \(preamble)\(fn) \(function) \(message) ")
-    }
-}
-
-// Everything passes through.
-extension OutlineViewDiffableDataSource: NSOutlineViewDataSource {
-
-    public func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
+    override public func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
         guard let item = item as? AnyHashable? else {
             return 0
         }
@@ -79,7 +65,7 @@ extension OutlineViewDiffableDataSource: NSOutlineViewDataSource {
         return ret
     }
 
-    public func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
+    override public func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
         if item == nil { return snapshot.child(index, ofItem: nil) ?? "" }
 
         guard let item = item as? OutlineMemberItem? else {
@@ -90,7 +76,7 @@ extension OutlineViewDiffableDataSource: NSOutlineViewDataSource {
         return ret ?? ""
     }
 
-    public func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
+    override public func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
         guard let item = item as? AnyHashable else {
             return false
         }
@@ -98,65 +84,13 @@ extension OutlineViewDiffableDataSource: NSOutlineViewDataSource {
         //        report(" item \(String(describing: item)) -> \(ret)")
         return ret
     }
+}
 
-    public func outlineView(_ outlineView: NSOutlineView, persistentObjectForItem item: Any?) -> Any? {
-        report()
-        return dataSource.outlineView?(outlineView, persistentObjectForItem: item)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, itemForPersistentObject object: Any) -> Any? {
-        report()
-        return dataSource.outlineView?(outlineView, itemForPersistentObject: object)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, updateDraggingItemsForDrag draggingInfo: NSDraggingInfo) {
-        report()
-        dataSource.outlineView?(outlineView, updateDraggingItemsForDrag: draggingInfo)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, pasteboardWriterForItem item: Any) -> NSPasteboardWriting? {
-        report()
-        return dataSource.outlineView?(outlineView, pasteboardWriterForItem: item)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
-        report()
-        dataSource.outlineView?(outlineView, sortDescriptorsDidChange: oldDescriptors)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, writeItems items: [Any], to pasteboard: NSPasteboard) -> Bool {
-        report()
-        return dataSource.outlineView?(outlineView, writeItems: items, to: pasteboard) ?? false
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: Any?) -> Any? {
-        //        report()
-        return dataSource.outlineView?(outlineView, objectValueFor: tableColumn, byItem: item)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, acceptDrop info: NSDraggingInfo, item: Any?, childIndex index: Int) -> Bool {
-        report()
-        return dataSource.outlineView?(outlineView, acceptDrop: info, item: item, childIndex: index) ?? false
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, setObjectValue object: Any?, for tableColumn: NSTableColumn?, byItem item: Any?) {
-        report()
-        dataSource.outlineView?(outlineView, setObjectValue: object, for: tableColumn, byItem: item)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, draggingSession session: NSDraggingSession, endedAt screenPoint: NSPoint, operation: NSDragOperation) {
-        report()
-        dataSource.outlineView?(outlineView, draggingSession: session, endedAt: screenPoint, operation: operation)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, draggingSession session: NSDraggingSession, willBeginAt screenPoint: NSPoint, forItems draggedItems: [Any]) {
-        report()
-        dataSource.outlineView?(outlineView, draggingSession: session, willBeginAt: screenPoint, forItems: draggedItems)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, validateDrop info: NSDraggingInfo, proposedItem item: Any?, proposedChildIndex index: Int) -> NSDragOperation {
-        report()
-        return dataSource.outlineView?(outlineView, validateDrop: info, proposedItem: item, proposedChildIndex: index) ?? NSDragOperation.generic
+extension NSObject {
+    func report(_ message: String = "", _ preamble: String = "", function: String = #function) {
+        //        let fn = String(describing: type(of: self))
+        //        print("--> \(preamble)\(fn) \(function) \(message) ")
     }
 }
 
+// Everything passes through.

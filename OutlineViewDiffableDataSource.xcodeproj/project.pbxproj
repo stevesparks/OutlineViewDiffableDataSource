@@ -7,13 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0E0BABD423F0208A00A3428F /* OutlineViewDataSource+Passthrough.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E0BABD323F0208A00A3428F /* OutlineViewDataSource+Passthrough.swift */; };
 		0E76A69423EEE5CD007321F1 /* OutlineViewDiffableDataSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E76A68A23EEE5CD007321F1 /* OutlineViewDiffableDataSource.framework */; };
 		0E76A69923EEE5CD007321F1 /* OutlineViewDiffableDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E76A69823EEE5CD007321F1 /* OutlineViewDiffableDataSourceTests.swift */; };
 		0E76A69B23EEE5CD007321F1 /* OutlineViewDiffableDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 0E76A68D23EEE5CD007321F1 /* OutlineViewDiffableDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0E76A6A523EEE5F2007321F1 /* OutlineViewDiffableDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E76A6A423EEE5F2007321F1 /* OutlineViewDiffableDataSource.swift */; };
-		0E76A6A723EEE632007321F1 /* SnapshotMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E76A6A623EEE632007321F1 /* SnapshotMember.swift */; };
+		0E76A6A723EEE632007321F1 /* OutlineViewSnapshotMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E76A6A623EEE632007321F1 /* OutlineViewSnapshotMember.swift */; };
 		0E76A6A923EEE649007321F1 /* NSOutlineView+Snapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E76A6A823EEE649007321F1 /* NSOutlineView+Snapshot.swift */; };
-		0E76A6AB23EEE7E6007321F1 /* Snapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E76A6AA23EEE7E6007321F1 /* Snapshot.swift */; };
+		0E76A6AB23EEE7E6007321F1 /* OutlineViewSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E76A6AA23EEE7E6007321F1 /* OutlineViewSnapshot.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0E0BABD323F0208A00A3428F /* OutlineViewDataSource+Passthrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OutlineViewDataSource+Passthrough.swift"; sourceTree = "<group>"; };
 		0E76A68A23EEE5CD007321F1 /* OutlineViewDiffableDataSource.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OutlineViewDiffableDataSource.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0E76A68D23EEE5CD007321F1 /* OutlineViewDiffableDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OutlineViewDiffableDataSource.h; sourceTree = "<group>"; };
 		0E76A68E23EEE5CD007321F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -34,9 +36,9 @@
 		0E76A69823EEE5CD007321F1 /* OutlineViewDiffableDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineViewDiffableDataSourceTests.swift; sourceTree = "<group>"; };
 		0E76A69A23EEE5CD007321F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0E76A6A423EEE5F2007321F1 /* OutlineViewDiffableDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineViewDiffableDataSource.swift; sourceTree = "<group>"; };
-		0E76A6A623EEE632007321F1 /* SnapshotMember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotMember.swift; sourceTree = "<group>"; };
+		0E76A6A623EEE632007321F1 /* OutlineViewSnapshotMember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineViewSnapshotMember.swift; sourceTree = "<group>"; };
 		0E76A6A823EEE649007321F1 /* NSOutlineView+Snapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSOutlineView+Snapshot.swift"; sourceTree = "<group>"; };
-		0E76A6AA23EEE7E6007321F1 /* Snapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Snapshot.swift; sourceTree = "<group>"; };
+		0E76A6AA23EEE7E6007321F1 /* OutlineViewSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineViewSnapshot.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,9 +84,10 @@
 				0E76A68D23EEE5CD007321F1 /* OutlineViewDiffableDataSource.h */,
 				0E76A68E23EEE5CD007321F1 /* Info.plist */,
 				0E76A6A423EEE5F2007321F1 /* OutlineViewDiffableDataSource.swift */,
-				0E76A6A623EEE632007321F1 /* SnapshotMember.swift */,
+				0E76A6A623EEE632007321F1 /* OutlineViewSnapshotMember.swift */,
 				0E76A6A823EEE649007321F1 /* NSOutlineView+Snapshot.swift */,
-				0E76A6AA23EEE7E6007321F1 /* Snapshot.swift */,
+				0E76A6AA23EEE7E6007321F1 /* OutlineViewSnapshot.swift */,
+				0E0BABD323F0208A00A3428F /* OutlineViewDataSource+Passthrough.swift */,
 			);
 			name = OutlineViewDiffableDataSource;
 			sourceTree = "<group>";
@@ -208,9 +211,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				0E76A6A523EEE5F2007321F1 /* OutlineViewDiffableDataSource.swift in Sources */,
-				0E76A6AB23EEE7E6007321F1 /* Snapshot.swift in Sources */,
+				0E76A6AB23EEE7E6007321F1 /* OutlineViewSnapshot.swift in Sources */,
+				0E0BABD423F0208A00A3428F /* OutlineViewDataSource+Passthrough.swift in Sources */,
 				0E76A6A923EEE649007321F1 /* NSOutlineView+Snapshot.swift in Sources */,
-				0E76A6A723EEE632007321F1 /* SnapshotMember.swift in Sources */,
+				0E76A6A723EEE632007321F1 /* OutlineViewSnapshotMember.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

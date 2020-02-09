@@ -8,12 +8,15 @@
 
 import Foundation
 
-struct SnapshotMember {
+/* This represents a node in the outline data source.
+ * It has answers to the three basic questions about the node.
+ */
+internal struct OutlineViewSnapshotMember {
     var item: OutlineMemberItem?
-    var children: [SnapshotMember] = []
+    var children: [OutlineViewSnapshotMember] = []
     var isExpandable = false
 
-    func indexPath(of member: SnapshotMember) -> IndexPath? {
+    func indexPath(of member: OutlineViewSnapshotMember) -> IndexPath? {
         for (idx, child) in children.enumerated() {
             if child == member {
                 return IndexPath(indexes: [idx])
@@ -24,7 +27,7 @@ struct SnapshotMember {
         return nil
     }
 
-    func parent(of member: SnapshotMember) -> SnapshotMember? {
+    func parent(of member: OutlineViewSnapshotMember) -> OutlineViewSnapshotMember? {
         for child in children {
             if child == member { return self }
             if let p = child.parent(of: member) { return p }
@@ -32,7 +35,7 @@ struct SnapshotMember {
         return nil
     }
 
-    func search(for item: OutlineMemberItem) -> SnapshotMember? {
+    func search(for item: OutlineMemberItem) -> OutlineViewSnapshotMember? {
         if item == self.item { return self }
         for child in children {
             if let hit = child.search(for: item) {
@@ -43,27 +46,25 @@ struct SnapshotMember {
     }
 }
 
-extension SnapshotMember: CustomStringConvertible {
+extension OutlineViewSnapshotMember: CustomStringConvertible {
     var description: String {
         let thing: Any = item ?? "-nil-"
         return "<OutlineMember: \(String(describing: thing))>"
     }
 }
 
-extension SnapshotMember: Equatable {
-    static func ==(lhs: SnapshotMember, rhs: SnapshotMember) -> Bool {
+extension OutlineViewSnapshotMember: Equatable, Hashable {
+    static func ==(lhs: OutlineViewSnapshotMember, rhs: OutlineViewSnapshotMember) -> Bool {
         return lhs.item == rhs.item
     }
-}
 
-extension SnapshotMember: Hashable {
     func hash(into hasher: inout Hasher) {
         item.hash(into: &hasher)
     }
 }
 
 
-public enum ChangeInstruction: CustomStringConvertible {
+public enum OutlineChangeInstruction: CustomStringConvertible {
     case remove(IndexPath)
     case insert(AnyHashable, IndexPath)
     case move(IndexPath, IndexPath)
@@ -77,16 +78,19 @@ public enum ChangeInstruction: CustomStringConvertible {
     }
 }
 
-public typealias SnapshotDiff = [ChangeInstruction]
+public typealias OutlineViewSnapshotDiff = [OutlineChangeInstruction]
 
 
 // Here is where the old snapshot and new snapshot are rectified
-extension SnapshotMember {
-    func instructions(forMorphingInto other: SnapshotMember, from baseIndexPath: IndexPath) -> SnapshotDiff {
+extension OutlineViewSnapshotMember {
+    // baseIndexPath is the index path of this item.
+    // Its child indices get appended to it to make their own
+    // index path.
+    func instructions(forMorphingInto other: OutlineViewSnapshotMember, from baseIndexPath: IndexPath) -> OutlineViewSnapshotDiff {
         let src = children
         let dst = other.children
 
-        var result = SnapshotDiff()
+        var result = OutlineViewSnapshotDiff()
 
         func log(_ str: String) {
             // Uncomment for logging info
@@ -100,14 +104,14 @@ extension SnapshotMember {
             log("\(src) -> \(dst)")
             log(" -> \(work)")
 
-            func appendResult(_ inst: ChangeInstruction) {
+            func appendResult(_ inst: OutlineChangeInstruction) {
                 result.append(inst)
                 log("APPEND: \(inst)\n -> \(work)")
             }
 
             log("\(baseIndexPath) DELETE PHASE")
             // 1. Find things that don't belong and remove them.
-            var deletables = [SnapshotMember]()
+            var deletables = [OutlineViewSnapshotMember]()
             for item in work {
                 if !dst.contains(item) {
                     deletables.append(item)
