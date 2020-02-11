@@ -142,9 +142,10 @@ extension OutlineViewSnapshotMember {
             for (dstIdx, item) in dst.enumerated() {
                 if let workIdx = work.firstIndex(of: item) {
                     if workIdx != dstIdx {
+                        let dest = dstIdx > work.count ? work.count : dstIdx
                         work.remove(at: workIdx)
-                        work.insert(item, at: dstIdx)
-                        appendResult(.move(baseIndexPath.appending(workIdx), baseIndexPath.appending(dstIdx)))
+                        work.insert(item, at: dest)
+                        appendResult(.move(baseIndexPath.appending(workIdx), baseIndexPath.appending(dest)))
                     }
                 }
             }

@@ -20,9 +20,9 @@ typealias OutlineMemberItem = AnyHashable
 public class OutlineViewDiffableDataSource: PassthroughOutlineViewDataSource {
     private let outlineView: NSOutlineView!
 
-    init(baseDataSource: NSOutlineViewDataSource, targetView: NSOutlineView) {
+    public init(baseDataSource: NSOutlineViewDataSource, targetView: NSOutlineView, delegate: NSOutlineViewDelegate? = nil) {
         self.outlineView = targetView
-        super.init(dataSource: baseDataSource)
+        super.init(dataSource: baseDataSource, delegate: delegate)
         snapshot = OutlineViewSnapshot(from: dataSource, for: outlineView)
         targetView.dataSource = self
     }
@@ -36,13 +36,13 @@ public class OutlineViewDiffableDataSource: PassthroughOutlineViewDataSource {
             return
         }
 
-        guard !isEmpty else {
+        let oldSnapshot = snapshot
+        guard !oldSnapshot.isEmpty else {
             refreshSnapshot()
             outlineView.reloadData()
             return
         }
 
-        let oldSnapshot = snapshot
         refreshSnapshot()
         let newSnapshot = snapshot
         outlineView.apply(oldSnapshot.instructions(forMorphingInto: newSnapshot))
@@ -61,7 +61,6 @@ public class OutlineViewDiffableDataSource: PassthroughOutlineViewDataSource {
             return 0
         }
         let ret = snapshot.numberOfChildren(ofItem: item)
-        report(" item \(String(describing: item)) -> \(ret)")
         return ret
     }
 
@@ -72,7 +71,6 @@ public class OutlineViewDiffableDataSource: PassthroughOutlineViewDataSource {
             return ""
         }
         let ret = snapshot.child(index, ofItem: item)
-        //        report(" child \(index) item \(String(describing: item)) -> \(String(describing: ret))")
         return ret ?? ""
     }
 
@@ -81,15 +79,25 @@ public class OutlineViewDiffableDataSource: PassthroughOutlineViewDataSource {
             return false
         }
         let ret = snapshot.isItemExpandable(item)
-        //        report(" item \(String(describing: item)) -> \(ret)")
         return ret
+    }
+
+    // Makes snapshots animate in and out
+    public override func outlineView(_ outlineView: NSOutlineView, draggingSession session: NSDraggingSession, willBeginAt screenPoint: NSPoint, forItems draggedItems: [Any]) {
+        super.outlineView(outlineView, draggingSession: session, willBeginAt: screenPoint, forItems: draggedItems)
+//        applySnapshot()
+    }
+
+    public override func outlineView(_ outlineView: NSOutlineView, draggingSession session: NSDraggingSession, endedAt screenPoint: NSPoint, operation: NSDragOperation) {
+        super.outlineView(outlineView, draggingSession: session, endedAt: screenPoint, operation: operation)
+        applySnapshot()
     }
 }
 
-extension NSObject {
+public extension NSObject {
     func report(_ message: String = "", _ preamble: String = "", function: String = #function) {
-        //        let fn = String(describing: type(of: self))
-        //        print("--> \(preamble)\(fn) \(function) \(message) ")
+                let fn = String(describing: type(of: self))
+                print("--> \(preamble)\(fn) \(function) \(message) ")
     }
 }
 
