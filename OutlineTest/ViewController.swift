@@ -93,7 +93,7 @@ extension MyArrayDataSource {
             }()
             report("drop `\(sourceText)` \(targetDescription)")
             if var arr = contents[item] {
-                if index >= 0 {
+                if index >= 0, index <= arr.count {
                     arr.insert(sourceText, at: index)
                 } else {
                     arr.append(sourceText)

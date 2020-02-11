@@ -159,12 +159,7 @@
 		0E76A68C23EEE5CD007321F1 /* OutlineViewDiffableDataSource */ = {
 			isa = PBXGroup;
 			children = (
-				0E76A68D23EEE5CD007321F1 /* OutlineViewDiffableDataSource.h */,
-				0E76A6A423EEE5F2007321F1 /* OutlineViewDiffableDataSource.swift */,
-				0E76A6A623EEE632007321F1 /* OutlineViewSnapshotMember.swift */,
-				0E76A6A823EEE649007321F1 /* NSOutlineView+Snapshot.swift */,
-				0E76A6AA23EEE7E6007321F1 /* OutlineViewSnapshot.swift */,
-				0E0BABD323F0208A00A3428F /* OutlineViewDataSource+Passthrough.swift */,
+				0ECB2C0023F31904008103EE /* Diffable Data Source */,
 			);
 			name = OutlineViewDiffableDataSource;
 			sourceTree = "<group>";
@@ -178,6 +173,19 @@
 				0E0BABD723F19B5D00A3428F /* ArrayDataSource.swift */,
 			);
 			path = OutlineViewDiffableDataSourceTests;
+			sourceTree = "<group>";
+		};
+		0ECB2C0023F31904008103EE /* Diffable Data Source */ = {
+			isa = PBXGroup;
+			children = (
+				0E76A68D23EEE5CD007321F1 /* OutlineViewDiffableDataSource.h */,
+				0E76A6A423EEE5F2007321F1 /* OutlineViewDiffableDataSource.swift */,
+				0E76A6A623EEE632007321F1 /* OutlineViewSnapshotMember.swift */,
+				0E76A6A823EEE649007321F1 /* NSOutlineView+Snapshot.swift */,
+				0E76A6AA23EEE7E6007321F1 /* OutlineViewSnapshot.swift */,
+				0E0BABD323F0208A00A3428F /* OutlineViewDataSource+Passthrough.swift */,
+			);
+			path = "Diffable Data Source";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
