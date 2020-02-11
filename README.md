@@ -9,3 +9,7 @@ When you call `applySnapshot()` on the diffable data source instead of `reloadDa
 
 ![Sample app](diff.gif)
 
+### To Do
+
+- Perhaps honor the `responds(to: selector)` stuff in the data source. I began this, but it wasn't necessary, so I punted.
+- Passthrough implementations of all the remaining delegate methods
