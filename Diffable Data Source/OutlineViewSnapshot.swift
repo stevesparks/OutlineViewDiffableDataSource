@@ -6,7 +6,7 @@
 //  Copyright © 2020 Big Nerd Ranch. All rights reserved.
 //
 
-import Foundation
+import Cocoa
 
 public class OutlineViewSnapshot: NSObject {
     private var root: OutlineViewSnapshotMember

@@ -6,7 +6,7 @@
 //  Copyright © 2020 Big Nerd Ranch. All rights reserved.
 //
 
-import Foundation
+import Cocoa
 
 // Turn a diff into commands
 extension NSOutlineView {
