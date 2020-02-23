@@ -8,8 +8,6 @@
 
 import Cocoa
 
-typealias OutlineMemberItem = AnyHashable
-
 /***
  * Created by Steve Sparks for Big Nerd Ranch
  *
@@ -17,7 +15,7 @@ typealias OutlineMemberItem = AnyHashable
  * large Mac app with a complex NSOutlineView. Each time the contents of the outline
  * view changed, we were reloading, and had a TON of plumbing around hiding that fact.
  */
-public class OutlineViewDiffableDataSource: PassthroughOutlineViewDataSource {
+public class OutlineViewDiffableDataSource<T: Hashable>: PassthroughOutlineViewDataSource {
     private let outlineView: NSOutlineView!
 
     public init(baseDataSource: NSOutlineViewDataSource, targetView: NSOutlineView, delegate: NSOutlineViewDelegate? = nil) {
@@ -27,7 +25,7 @@ public class OutlineViewDiffableDataSource: PassthroughOutlineViewDataSource {
         targetView.dataSource = self
     }
 
-    private var snapshot = OutlineViewSnapshot.empty
+    private var snapshot = OutlineViewSnapshot<T>()
 
     // Use when the model has changed and you want animation
     public func applySnapshot() {
@@ -57,7 +55,7 @@ public class OutlineViewDiffableDataSource: PassthroughOutlineViewDataSource {
     }
 
     override public func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
-        guard let item = item as? AnyHashable? else {
+        guard let item = item as? T? else {
             return 0
         }
         let ret = snapshot.numberOfChildren(ofItem: item)
@@ -67,7 +65,7 @@ public class OutlineViewDiffableDataSource: PassthroughOutlineViewDataSource {
     override public func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
         if item == nil { return snapshot.child(index, ofItem: nil) ?? "" }
 
-        guard let item = item as? OutlineMemberItem? else {
+        guard let item = item as? T? else {
             return ""
         }
         let ret = snapshot.child(index, ofItem: item)
@@ -75,7 +73,7 @@ public class OutlineViewDiffableDataSource: PassthroughOutlineViewDataSource {
     }
 
     override public func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
-        guard let item = item as? AnyHashable else {
+        guard let item = item as? T else {
             return false
         }
         let ret = snapshot.isItemExpandable(item)

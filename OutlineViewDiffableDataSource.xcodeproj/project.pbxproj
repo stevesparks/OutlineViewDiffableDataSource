@@ -10,6 +10,7 @@
 		0E0BABD423F0208A00A3428F /* OutlineViewDataSource+Passthrough.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E0BABD323F0208A00A3428F /* OutlineViewDataSource+Passthrough.swift */; };
 		0E0BABD623F19AFF00A3428F /* OutlineViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E0BABD523F19AFF00A3428F /* OutlineViewSnapshotTests.swift */; };
 		0E0BABD823F19B5D00A3428F /* ArrayDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E0BABD723F19B5D00A3428F /* ArrayDataSource.swift */; };
+		0E36A29523F34AE70002445A /* ReorderableArrayDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E36A29423F34AE70002445A /* ReorderableArrayDataSource.swift */; };
 		0E6344AB23F2B3D900870976 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6344AA23F2B3D900870976 /* AppDelegate.swift */; };
 		0E6344AD23F2B3D900870976 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6344AC23F2B3D900870976 /* ViewController.swift */; };
 		0E6344AF23F2B3DC00870976 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0E6344AE23F2B3DC00870976 /* Assets.xcassets */; };
@@ -47,6 +48,7 @@
 		0E0BABD323F0208A00A3428F /* OutlineViewDataSource+Passthrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OutlineViewDataSource+Passthrough.swift"; sourceTree = "<group>"; };
 		0E0BABD523F19AFF00A3428F /* OutlineViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineViewSnapshotTests.swift; sourceTree = "<group>"; };
 		0E0BABD723F19B5D00A3428F /* ArrayDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayDataSource.swift; sourceTree = "<group>"; };
+		0E36A29423F34AE70002445A /* ReorderableArrayDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderableArrayDataSource.swift; sourceTree = "<group>"; };
 		0E6344A823F2B3D900870976 /* OutlineTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OutlineTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0E6344AA23F2B3D900870976 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0E6344AC23F2B3D900870976 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 			children = (
 				0E6344AA23F2B3D900870976 /* AppDelegate.swift */,
 				0E6344AC23F2B3D900870976 /* ViewController.swift */,
+				0E36A29423F34AE70002445A /* ReorderableArrayDataSource.swift */,
 				0E6344AE23F2B3DC00870976 /* Assets.xcassets */,
 				0E6344B023F2B3DC00870976 /* Main.storyboard */,
 				0E6344B323F2B3DC00870976 /* Info.plist */,
@@ -358,6 +361,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0E36A29523F34AE70002445A /* ReorderableArrayDataSource.swift in Sources */,
 				0E6344AD23F2B3D900870976 /* ViewController.swift in Sources */,
 				0E6344C623F2B49D00870976 /* ArrayDataSource.swift in Sources */,
 				0E6344AB23F2B3D900870976 /* AppDelegate.swift in Sources */,

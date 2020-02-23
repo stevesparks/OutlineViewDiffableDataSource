@@ -11,8 +11,8 @@ import Foundation
 /* This represents a node in the outline data source.
  * It has answers to the three basic questions about the node.
  */
-internal struct OutlineViewSnapshotMember {
-    var item: OutlineMemberItem?
+internal struct OutlineViewSnapshotMember<T: Hashable> {
+    var item: T?
     var children: [OutlineViewSnapshotMember] = []
     var isExpandable = false
 
@@ -35,7 +35,7 @@ internal struct OutlineViewSnapshotMember {
         return nil
     }
 
-    func search(for item: OutlineMemberItem) -> OutlineViewSnapshotMember? {
+    func search(for item: T) -> OutlineViewSnapshotMember? {
         if item == self.item { return self }
         for child in children {
             if let hit = child.search(for: item) {

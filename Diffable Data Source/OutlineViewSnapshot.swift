@@ -8,8 +8,8 @@
 
 import Cocoa
 
-public class OutlineViewSnapshot: NSObject {
-    private var root: OutlineViewSnapshotMember
+public class OutlineViewSnapshot<T: Hashable>: NSObject {
+    private var root: OutlineViewSnapshotMember<T>
 
     init(from ds: NSOutlineViewDataSource, for view: NSOutlineView) {
         root = OutlineViewSnapshot.member(using: ds, in: view)
@@ -23,12 +23,12 @@ public class OutlineViewSnapshot: NSObject {
 
     var isEmpty: Bool { return root.children.isEmpty }
 
-    private static func member(for item: OutlineMemberItem? = nil, using ds: NSOutlineViewDataSource, in view: NSOutlineView, recursive: Bool = true) -> OutlineViewSnapshotMember {
+    private static func member(for item: T? = nil, using ds: NSOutlineViewDataSource, in view: NSOutlineView, recursive: Bool = true) -> OutlineViewSnapshotMember<T> {
         let itemCount = ds.outlineView?(view, numberOfChildrenOfItem: item) ?? 0
-        var children = [OutlineViewSnapshotMember]()
+        var children = [OutlineViewSnapshotMember<T>]()
         if recursive && itemCount > 0 {
             (0..<itemCount).forEach { counter in
-                if let child = ds.outlineView?(view, child: counter, ofItem: item) as? AnyHashable {
+                if let child = ds.outlineView?(view, child: counter, ofItem: item) as? T {
                     children.append(member(for: child, using: ds, in: view, recursive: recursive))
                 }
             }
@@ -45,9 +45,9 @@ public class OutlineViewSnapshot: NSObject {
         return OutlineViewSnapshotMember(item: item, children: children, isExpandable: exp)
     }
 
-    static let empty = OutlineViewSnapshot()
+//    static let empty = OutlineViewSnapshot()
 
-    func parent(of member: OutlineViewSnapshotMember) -> OutlineViewSnapshotMember? {
+    func parent(of member: OutlineViewSnapshotMember<T>) -> OutlineViewSnapshotMember<T>? {
         return root.parent(of: member)
     }
 
@@ -55,7 +55,7 @@ public class OutlineViewSnapshot: NSObject {
         return root.instructions(forMorphingInto: destination.root, from: IndexPath())
     }
 
-    func numberOfChildren(ofItem item: AnyHashable?) -> Int {
+    func numberOfChildren(ofItem item: T?) -> Int {
         if let item = item {
             if let member = root.search(for: item) {
                 return member.children.count
@@ -66,7 +66,7 @@ public class OutlineViewSnapshot: NSObject {
         return 0
     }
 
-    func child(_ index: Int, ofItem item: OutlineMemberItem?) -> OutlineMemberItem? {
+    func child(_ index: Int, ofItem item: T?) -> T? {
         if let item = item {
             if let member = root.search(for: item) {
                 return member.children[index].item
@@ -77,7 +77,7 @@ public class OutlineViewSnapshot: NSObject {
         return nil
     }
 
-    func isItemExpandable(_ item: OutlineMemberItem) -> Bool {
+    func isItemExpandable(_ item: T) -> Bool {
         if let member = root.search(for: item) {
             return member.isExpandable
         }
