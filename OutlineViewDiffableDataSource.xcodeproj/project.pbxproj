@@ -18,6 +18,7 @@
 		0E6344BE23F2B3DC00870976 /* OutlineTestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6344BD23F2B3DC00870976 /* OutlineTestTests.swift */; };
 		0E6344C623F2B49D00870976 /* ArrayDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E0BABD723F19B5D00A3428F /* ArrayDataSource.swift */; };
 		0E6344C823F2B4C200870976 /* OutlineViewDiffableDataSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E76A68A23EEE5CD007321F1 /* OutlineViewDiffableDataSource.framework */; };
+		0E69D6A0240BE18200873FF2 /* PassthroughWrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E69D69F240BE18200873FF2 /* PassthroughWrappers.swift */; };
 		0E76A69423EEE5CD007321F1 /* OutlineViewDiffableDataSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E76A68A23EEE5CD007321F1 /* OutlineViewDiffableDataSource.framework */; };
 		0E76A69923EEE5CD007321F1 /* OutlineViewDiffableDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E76A69823EEE5CD007321F1 /* OutlineViewDiffableDataSourceTests.swift */; };
 		0E76A69B23EEE5CD007321F1 /* OutlineViewDiffableDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 0E76A68D23EEE5CD007321F1 /* OutlineViewDiffableDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -59,6 +60,7 @@
 		0E6344B923F2B3DC00870976 /* OutlineTestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OutlineTestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0E6344BD23F2B3DC00870976 /* OutlineTestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTestTests.swift; sourceTree = "<group>"; };
 		0E6344BF23F2B3DC00870976 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0E69D69F240BE18200873FF2 /* PassthroughWrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassthroughWrappers.swift; sourceTree = "<group>"; };
 		0E76A68A23EEE5CD007321F1 /* OutlineViewDiffableDataSource.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OutlineViewDiffableDataSource.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0E76A68D23EEE5CD007321F1 /* OutlineViewDiffableDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OutlineViewDiffableDataSource.h; sourceTree = "<group>"; };
 		0E76A68E23EEE5CD007321F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 				0E76A6A823EEE649007321F1 /* NSOutlineView+Snapshot.swift */,
 				0E76A6AA23EEE7E6007321F1 /* OutlineViewSnapshot.swift */,
 				0E0BABD323F0208A00A3428F /* OutlineViewDataSource+Passthrough.swift */,
+				0E69D69F240BE18200873FF2 /* PassthroughWrappers.swift */,
 			);
 			path = "Diffable Data Source";
 			sourceTree = "<group>";
@@ -380,6 +383,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0E69D6A0240BE18200873FF2 /* PassthroughWrappers.swift in Sources */,
 				0E76A6A523EEE5F2007321F1 /* OutlineViewDiffableDataSource.swift in Sources */,
 				0E76A6AB23EEE7E6007321F1 /* OutlineViewSnapshot.swift in Sources */,
 				0E0BABD423F0208A00A3428F /* OutlineViewDataSource+Passthrough.swift in Sources */,

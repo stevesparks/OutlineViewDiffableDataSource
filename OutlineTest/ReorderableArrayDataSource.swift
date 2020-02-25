@@ -85,4 +85,8 @@ class ReorderableArrayDataSource: ArrayDataSource {
         report("\(operation) \(sourceText)")
     }
 
+    func report(_ message: String = "", _ preamble: String = "", function: String = #function) {
+        let fn = String(describing: type(of: self))
+        print("--> \(preamble)\(fn) \(function) \(message) ")
+    }
 }

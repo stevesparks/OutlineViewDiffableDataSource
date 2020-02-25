@@ -92,11 +92,4 @@ public class OutlineViewDiffableDataSource<T: Hashable>: PassthroughOutlineViewD
     }
 }
 
-public extension NSObject {
-    func report(_ message: String = "", _ preamble: String = "", function: String = #function) {
-                let fn = String(describing: type(of: self))
-                print("--> \(preamble)\(fn) \(function) \(message) ")
-    }
-}
-
 // Everything passes through.

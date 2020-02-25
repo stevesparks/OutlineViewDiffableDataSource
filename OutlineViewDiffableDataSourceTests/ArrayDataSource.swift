@@ -56,7 +56,6 @@ class ArrayDataSource: NSObject, NSOutlineViewDataSource {
     }
 }
 
-
 extension ArrayDataSource: NSOutlineViewDelegate {
     func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
         return NSTextField(labelWithString: String(describing: item))

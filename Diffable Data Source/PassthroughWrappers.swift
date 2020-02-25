@@ -1,28 +1,21 @@
 //
-//  OutlineViewDataSource+Passthrough.swift
+//  PassthroughWrappers.swift
 //  OutlineViewDiffableDataSource
 //
-//  Created by Steve Sparks on 2/9/20.
+//  Created by Steve Sparks on 3/1/20.
 //  Copyright © 2020 Big Nerd Ranch. All rights reserved.
 //
 
-import Cocoa
+import Foundation
 
-public extension NSObject {
-}
+class SnapshotDataSourceWrapper<T: NSObject & NSOutlineViewDataSource>: NSObject, NSOutlineViewDataSource {
+    let dataSource: T
+    unowned var snapshotDataSource: (NSObject & NSOutlineViewDataSource)
 
-public class PassthroughOutlineViewDataSource: NSObject, NSOutlineViewDataSource, NSOutlineViewDelegate {
-    func report(_ message: String = "", _ preamble: String = "", function: String = #function) {
-//        let fn = String(describing: type(of: self))
-//        print("--> \(preamble)\(fn) \(function) \(message) ")
-    }
+    init(_ wrapped: T, snapshot: (NSObject & NSOutlineViewDataSource)) {
+        dataSource = wrapped
+        snapshotDataSource = snapshot
 
-    var dataSource: NSOutlineViewDataSource!
-    var delegate: NSOutlineViewDelegate?
-
-    init(dataSource: NSOutlineViewDataSource, delegate: NSOutlineViewDelegate? = nil) {
-        self.dataSource = dataSource
-        self.delegate = delegate
         super.init()
     }
 
@@ -47,6 +40,100 @@ public class PassthroughOutlineViewDataSource: NSObject, NSOutlineViewDataSource
         case outlineViewDraggingEnd = "outlineView:draggingEndedAt:operation:"
     }
 
+    override public class func instancesRespond(to aSelector: Selector!) -> Bool {
+        let sel = aSelector.description
+        var ret = false
+        var ident = "???"
+
+        if let _ = OverriddenSelectors(rawValue: sel) {
+            ident = "OVR"
+            ret = true
+        } else if let _ = DataSourceSelectors(rawValue: sel) {
+            ident = "DS "
+            ret = T.instancesRespond(to: aSelector)
+        } else {
+            ret = super.responds(to: aSelector)
+        }
+
+        // change this to print() if you wish
+        _ = "\(ident) \(sel) -> \(ret)"
+        return ret
+    }
+
+    public func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
+        return snapshotDataSource.outlineView!(outlineView, numberOfChildrenOfItem: item)
+    }
+
+    public func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
+        return snapshotDataSource.outlineView!(outlineView, child: index, ofItem: item)
+    }
+
+    public func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
+        return snapshotDataSource.outlineView!(outlineView, isItemExpandable: item)
+    }
+
+    // MARK: - Data source pass through
+
+    public func outlineView(_ outlineView: NSOutlineView, persistentObjectForItem item: Any?) -> Any? {
+        return dataSource.outlineView!(outlineView, persistentObjectForItem: item)
+    }
+
+    public func outlineView(_ outlineView: NSOutlineView, itemForPersistentObject object: Any) -> Any? {
+        return dataSource.outlineView!(outlineView, itemForPersistentObject: object)
+    }
+
+    public func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: Any?) -> Any? {
+        return dataSource.outlineView!(outlineView, objectValueFor: tableColumn, byItem: item)
+    }
+
+    public func outlineView(_ outlineView: NSOutlineView, setObjectValue object: Any?, for tableColumn: NSTableColumn?, byItem item: Any?) {
+        dataSource.outlineView!(outlineView, setObjectValue: object, for: tableColumn, byItem: item)
+    }
+
+    public func outlineView(_ outlineView: NSOutlineView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
+        dataSource.outlineView!(outlineView, sortDescriptorsDidChange: oldDescriptors)
+    }
+
+    public func outlineView(_ outlineView: NSOutlineView, updateDraggingItemsForDrag draggingInfo: NSDraggingInfo) {
+        dataSource.outlineView!(outlineView, updateDraggingItemsForDrag: draggingInfo)
+    }
+
+    public func outlineView(_ outlineView: NSOutlineView, pasteboardWriterForItem item: Any) -> NSPasteboardWriting? {
+        return dataSource.outlineView?(outlineView, pasteboardWriterForItem: item)
+    }
+
+    public func outlineView(_ outlineView: NSOutlineView, writeItems items: [Any], to pasteboard: NSPasteboard) -> Bool {
+        return dataSource.outlineView!(outlineView, writeItems: items, to: pasteboard)
+    }
+
+    public func outlineView(_ outlineView: NSOutlineView, validateDrop info: NSDraggingInfo, proposedItem item: Any?, proposedChildIndex index: Int) -> NSDragOperation {
+        return dataSource.outlineView?(outlineView, validateDrop: info, proposedItem: item, proposedChildIndex: index) ?? .generic
+    }
+
+    public func outlineView(_ outlineView: NSOutlineView, acceptDrop info: NSDraggingInfo, item: Any?, childIndex index: Int) -> Bool {
+        return dataSource.outlineView?(outlineView, acceptDrop: info, item: item, childIndex: index) ?? false
+    }
+
+    public func outlineView(_ outlineView: NSOutlineView, draggingSession session: NSDraggingSession, willBeginAt screenPoint: NSPoint, forItems draggedItems: [Any]) {
+        dataSource.outlineView?(outlineView, draggingSession: session, willBeginAt: screenPoint, forItems: draggedItems)
+    }
+
+    public func outlineView(_ outlineView: NSOutlineView, draggingSession session: NSDraggingSession, endedAt screenPoint: NSPoint, operation: NSDragOperation) {
+        dataSource.outlineView?(outlineView, draggingSession: session, endedAt: screenPoint, operation: operation)
+    }
+}
+
+class SnapshotDelegateWrapper<T: NSObject & NSOutlineViewDelegate>: NSObject, NSOutlineViewDelegate {
+    let delegate: T
+    unowned var snapshotDelegate: (NSObject & NSOutlineViewDelegate)
+
+    init(_ wrapped: T, snapshot: (NSObject & NSOutlineViewDelegate)) {
+        delegate = wrapped
+        snapshotDelegate = snapshot
+
+        super.init()
+    }
+
     enum DelegateSelectors: String, CaseIterable {
         case outlineViewColumnDidMove = "outlineViewColumnDidMove:"
         case outlineViewIsGroupItem = "outlineView:isGroupItem:"
@@ -67,22 +154,14 @@ public class PassthroughOutlineViewDataSource: NSObject, NSOutlineViewDataSource
         case outlineViewWillDisplayOutlineCellForTableColumnItem = "outlineView:willDisplayOutlineCell:forTableColumn:item:"
     }
 
-    override public func responds(to aSelector: Selector!) -> Bool {
+    override public class func instancesRespond(to aSelector: Selector!) -> Bool {
         let sel = aSelector.description
         var ret = false
         var ident = "???"
 
-        if let _ = OverriddenSelectors(rawValue: sel) {
-            ident = "OVR"
-            ret = true
-        } else if let _ = DataSourceSelectors(rawValue: sel) {
+        if let _ = DelegateSelectors(rawValue: sel) {
             ident = "DS "
-            ret = dataSource.responds(to: aSelector)
-        } else if let _ = DelegateSelectors(rawValue: sel) {
-            ident = "DLG"
-            ret = delegate?.responds(to: aSelector) ?? false
-        } else {
-            ret = super.responds(to: aSelector)
+            ret = T.instancesRespond(to: aSelector)
         }
 
         // change this to print() if you wish
@@ -90,157 +169,65 @@ public class PassthroughOutlineViewDataSource: NSObject, NSOutlineViewDataSource
         return ret
     }
 
-    public func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
-        report()
-        return dataSource.outlineView!(outlineView, numberOfChildrenOfItem: item)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
-        report()
-        return dataSource.outlineView!(outlineView, child: index, ofItem: item)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
-        report()
-        return dataSource.outlineView!(outlineView, isItemExpandable: item)
-    }
-
-    ////
-
-    public func outlineView(_ outlineView: NSOutlineView, persistentObjectForItem item: Any?) -> Any? {
-        report()
-        return dataSource.outlineView!(outlineView, persistentObjectForItem: item)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, itemForPersistentObject object: Any) -> Any? {
-        report()
-        return dataSource.outlineView!(outlineView, itemForPersistentObject: object)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: Any?) -> Any? {
-        report()
-        return dataSource.outlineView!(outlineView, objectValueFor: tableColumn, byItem: item)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, setObjectValue object: Any?, for tableColumn: NSTableColumn?, byItem item: Any?) {
-        report()
-        dataSource.outlineView!(outlineView, setObjectValue: object, for: tableColumn, byItem: item)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
-        report()
-        dataSource.outlineView!(outlineView, sortDescriptorsDidChange: oldDescriptors)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, updateDraggingItemsForDrag draggingInfo: NSDraggingInfo) {
-        report()
-        dataSource.outlineView!(outlineView, updateDraggingItemsForDrag: draggingInfo)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, pasteboardWriterForItem item: Any) -> NSPasteboardWriting? {
-        report()
-        return dataSource.outlineView?(outlineView, pasteboardWriterForItem: item)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, writeItems items: [Any], to pasteboard: NSPasteboard) -> Bool {
-        report()
-        return dataSource.outlineView!(outlineView, writeItems: items, to: pasteboard)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, validateDrop info: NSDraggingInfo, proposedItem item: Any?, proposedChildIndex index: Int) -> NSDragOperation {
-        report()
-        return dataSource.outlineView?(outlineView, validateDrop: info, proposedItem: item, proposedChildIndex: index) ?? .generic
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, acceptDrop info: NSDraggingInfo, item: Any?, childIndex index: Int) -> Bool {
-        report()
-        return dataSource.outlineView?(outlineView, acceptDrop: info, item: item, childIndex: index) ?? false
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, draggingSession session: NSDraggingSession, willBeginAt screenPoint: NSPoint, forItems draggedItems: [Any]) {
-        report()
-        dataSource.outlineView?(outlineView, draggingSession: session, willBeginAt: screenPoint, forItems: draggedItems)
-    }
-
-    public func outlineView(_ outlineView: NSOutlineView, draggingSession session: NSDraggingSession, endedAt screenPoint: NSPoint, operation: NSDragOperation) {
-        report()
-        dataSource.outlineView?(outlineView, draggingSession: session, endedAt: screenPoint, operation: operation)
-    }
-
     // MARK: - NSOutlineViewDelegate
 
     public func outlineViewColumnDidMove(_ notification: Notification) {
-        report()
-        delegate!.outlineViewColumnDidMove?(notification)
+        delegate.outlineViewColumnDidMove?(notification)
     }
 
     public func outlineView(_ outlineView: NSOutlineView, isGroupItem item: Any) -> Bool {
-        report()
-        return delegate!.outlineView!(outlineView, isGroupItem: item)
+        return delegate.outlineView!(outlineView, isGroupItem: item)
     }
 
     public func outlineView(_ outlineView: NSOutlineView, didClick tableColumn: NSTableColumn) {
-        report()
-        delegate!.outlineView!(outlineView, didClick: tableColumn)
+        delegate.outlineView!(outlineView, didClick: tableColumn)
     }
 
     public func outlineView(_ outlineView: NSOutlineView, didDrag tableColumn: NSTableColumn) {
-        report()
-        delegate!.outlineView!(outlineView, didDrag: tableColumn)
+        delegate.outlineView!(outlineView, didDrag: tableColumn)
     }
 
     public func outlineView(_ outlineView: NSOutlineView, mouseDownInHeaderOf tableColumn: NSTableColumn) {
-        report()
-        delegate!.outlineView!(outlineView, mouseDownInHeaderOf: tableColumn)
+        delegate.outlineView!(outlineView, mouseDownInHeaderOf: tableColumn)
     }
 
     public func outlineView(_ outlineView: NSOutlineView, shouldExpandItem item: Any) -> Bool {
-        report()
-        return delegate!.outlineView!(outlineView, shouldExpandItem: item)
+        return delegate.outlineView!(outlineView, shouldExpandItem: item)
     }
 
     public func outlineView(_ outlineView: NSOutlineView, shouldSelectItem item: Any) -> Bool {
-        report()
-        return delegate!.outlineView!(outlineView, shouldSelectItem: item)
+        return delegate.outlineView!(outlineView, shouldSelectItem: item)
     }
 
     public func outlineView(_ outlineView: NSOutlineView, shouldCollapseItem item: Any) -> Bool {
-        report()
-        return delegate!.outlineView!(outlineView, shouldCollapseItem: item)
+        return delegate.outlineView!(outlineView, shouldCollapseItem: item)
     }
 
     public func outlineView(_ outlineView: NSOutlineView, shouldSelect tableColumn: NSTableColumn?) -> Bool {
-        report()
-        return delegate!.outlineView!(outlineView, shouldSelect: tableColumn)
+        return delegate.outlineView!(outlineView, shouldSelect: tableColumn)
     }
 
     public func outlineView(_ outlineView: NSOutlineView, shouldEdit tableColumn: NSTableColumn?, item: Any) -> Bool {
-        report()
-        return delegate!.outlineView!(outlineView, shouldEdit: tableColumn, item: item)
+        return delegate.outlineView!(outlineView, shouldEdit: tableColumn, item: item)
     }
 
     public func outlineViewItemWillCollapse(_ notification: Notification) {
-        report()
-        delegate!.outlineViewItemWillCollapse!(notification)
+        delegate.outlineViewItemWillCollapse!(notification)
     }
 
     public func outlineViewItemWillExpand(_ notification: Notification) {
-        report()
-        delegate!.outlineViewItemWillExpand!(notification)
+        delegate.outlineViewItemWillExpand!(notification)
     }
 
     public func outlineViewItemDidCollapse(_ notification: Notification) {
-        report()
-        delegate!.outlineViewItemDidCollapse!(notification)
+        delegate.outlineViewItemDidCollapse!(notification)
     }
 
     public func outlineViewItemDidExpand(_ notification: Notification) {
-        report()
-        delegate!.outlineViewItemDidExpand!(notification)
+        delegate.outlineViewItemDidExpand!(notification)
     }
     public func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
-        report()
-        return delegate!.outlineView!(outlineView, viewFor: tableColumn, item: item) ?? nil
+        return delegate.outlineView!(outlineView, viewFor: tableColumn, item: item) ?? nil
     }
     // MARK: - To Do
     // TODO: Implement the loop:
@@ -249,7 +236,7 @@ public class PassthroughOutlineViewDataSource: NSObject, NSOutlineViewDataSource
     //      - add the selector to the DelegateSelectors array
     //      - uncomment the method down below
     //      - correct the code as necessary
-    //
+
     //    public func outlineView(_ outlineView: NSOutlineView, shouldShowCellExpansionFor tableColumn: NSTableColumn?, item: Any) -> Bool {
     //        report()
     //        return delegate!.outlineView!(outlineView, shouldShowCellExpansionFor: tableColumn, item: item) ?? false
@@ -317,4 +304,3 @@ public class PassthroughOutlineViewDataSource: NSObject, NSOutlineViewDataSource
     //        report()
     //    }
 }
-
