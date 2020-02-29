@@ -26,7 +26,7 @@ extension NSOutlineView {
                 if let srcChild = src.last, let dstChild = dst.last {
                     moveItem(at: srcChild, inParent: srcParent, to: dstChild, inParent: dstParent)
                 }
-            case .remove(let indexPath):
+            case .remove(_, let indexPath):
                 let parent = lastParent(for: indexPath)
                 if let childIndex = indexPath.last {
                     removeItems(at: [childIndex], inParent: parent, withAnimation: animation)

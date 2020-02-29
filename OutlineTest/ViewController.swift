@@ -53,8 +53,9 @@ class ViewController: NSViewController {
 
     @objc
     @IBAction func moveStuff(_ sender: Any?) {
+        ds.contents["A"] = ["A2"]
         ds.contents["A1"] = ["A1b", "A1a", "A1c"]
-        ds.contents["B"] = ["B2", "B1", "XX"]
+        ds.contents["B"] = ["B2", "B1", "A1"]
         diff.applySnapshot()
     }
 }

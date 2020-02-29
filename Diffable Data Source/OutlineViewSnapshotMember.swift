@@ -63,9 +63,8 @@ extension OutlineViewSnapshotMember: Equatable, Hashable {
     }
 }
 
-
 public enum OutlineChangeInstruction: CustomStringConvertible {
-    case remove(IndexPath)
+    case remove(AnyHashable, IndexPath)
     case insert(AnyHashable, IndexPath)
     case move(IndexPath, IndexPath)
 
@@ -120,7 +119,7 @@ extension OutlineViewSnapshotMember {
             for deletable in deletables {
                 if let delIdx = work.firstIndex(of: deletable) {
                     work.remove(at: delIdx)
-                    appendResult(.remove(baseIndexPath.appending(delIdx)))
+                    appendResult(.remove(deletable, baseIndexPath.appending(delIdx)))
                 }
             }
 

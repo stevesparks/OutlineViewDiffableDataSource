@@ -52,7 +52,9 @@ public class OutlineViewSnapshot<T: Hashable>: NSObject {
     }
 
     func instructions(forMorphingInto destination: OutlineViewSnapshot) -> OutlineViewSnapshotDiff {
-        return root.instructions(forMorphingInto: destination.root, from: IndexPath())
+        var raw = root.instructions(forMorphingInto: destination.root, from: IndexPath())
+        raw.reduce()
+        return raw
     }
 
     func numberOfChildren(ofItem item: T?) -> Int {
@@ -82,5 +84,65 @@ public class OutlineViewSnapshot<T: Hashable>: NSObject {
             return member.isExpandable
         }
         return false
+    }
+}
+
+extension OutlineViewSnapshotDiff {
+    mutating func reduce() {
+        // search for all removed, then try to pair with an inserted
+        let removeds = allRemoved
+        for removed in removeds {
+            let inserteds = allInserted
+            if let item = removed.item,
+                let inserted = inserteds.first(where: { $0.item == item }) {
+                let newInstruction = OutlineChangeInstruction.move(removed.targetIndexPath, inserted.targetIndexPath)
+                delete(removed)
+                guard let insertIdx = firstIndex(where: { $0 == inserted }) else {
+                    preconditionFailure("how does this happen")
+                }
+                insert(newInstruction, at: insertIdx)
+            }
+        }
+    }
+
+    mutating func delete(_ item: OutlineChangeInstruction) {
+        if let removeIdx = firstIndex(where: { $0 == item }) {
+            remove(at: removeIdx)
+        }
+    }
+    var allRemoved: [OutlineChangeInstruction] {
+        return self.filter { if case OutlineChangeInstruction.remove = $0 { return true } else { return false } }
+    }
+    var allInserted: [OutlineChangeInstruction] {
+        return self.filter { if case OutlineChangeInstruction.insert = $0 { return true } else { return false } }
+    }
+}
+
+extension OutlineChangeInstruction: Equatable {
+    public static func ==(lhs: OutlineChangeInstruction, rhs: OutlineChangeInstruction) -> Bool {
+        switch (lhs, rhs) {
+        case (.insert(let l, let l2), .insert(let r, let r2)): return l == r && l2 == r2
+        case (.remove(let l, let l2), .remove(let r, let r2)): return l == r && l2 == r2
+        case (.move(let l, let l2), .move(let r, let r2)): return l == r && l2 == r2
+        default: break
+        }
+
+        return false
+    }
+
+    var item: AnyHashable? {
+        switch self {
+        case .remove(let item, _): return item
+        case .insert(let item, _): return item
+        default: return nil
+        }
+    }
+
+    var targetIndexPath: IndexPath {
+        switch self {
+        case .remove(_, let indexPath): return indexPath
+        case .insert(_, let indexPath): return indexPath
+        case .move(_, let indexPath): return indexPath
+        }
     }
 }
