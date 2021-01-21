@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AppKit
 
 class SnapshotDataSourceWrapper<T: NSObject & NSOutlineViewDataSource>: NSObject, NSOutlineViewDataSource {
     let dataSource: T
